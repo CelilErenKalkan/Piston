@@ -15,7 +15,7 @@ public class Drag : MonoBehaviour
     [SerializeField] private Transform target;
     private Vector3 _originPos, _originRot;
     [SerializeField] private ItemType itemType;
-    private bool _shouldStopRotate, _hasStuck;
+    private bool _hasStuck;
     [SerializeField] private float minDistance;
 
     private void Start()
@@ -68,7 +68,6 @@ public class Drag : MonoBehaviour
     {
         if (_hasStuck) return;
         transform.position = GetMouseWorldPos() + mOffset;
-        if (!_shouldStopRotate) transform.LookAt(target);
 
         var distance = Vector3.Distance(transform.position, target.position);
         if (distance < minDistance)
@@ -81,9 +80,8 @@ public class Drag : MonoBehaviour
                     transform.DOMove(target.position, 0.5f).OnComplete(GetTheTarget);
                     return;
                 case ItemType.Bolt:
-                    transform.DOMove(target.position, 0.2f);
-                    transform.GetChild(0).DORotate(target.eulerAngles, 0.2f);
-                    transform.GetChild(0).DOScale(target.lossyScale, 0.2f).OnComplete(StayOnTarget);
+                    _hasStuck = true;
+                    transform.DOMove(target.position, 0.5f).OnComplete(GetTheTarget);
                     return;
                 default:
                     return;
@@ -95,12 +93,6 @@ public class Drag : MonoBehaviour
     {
         target.SetParent(transform.GetChild(0));
         Return();
-        _shouldStopRotate = true;
-    }
-
-    private void StayOnTarget()
-    {
-        transform.SetParent(target.parent);
     }
 
     private void OnMouseUp()
