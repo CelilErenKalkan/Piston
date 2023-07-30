@@ -362,6 +362,7 @@
 "Assets/Demigiant/DOTweenPro/DOTweenTextMeshPro.cs"
 "Assets/Demigiant/DOTweenPro/DOTweenTk2d.cs"
 "Assets/Scripts/Actions.cs"
+"Assets/Scripts/CameraController.cs"
 "Assets/Scripts/Drag.cs"
 -langversion:9.0
 
