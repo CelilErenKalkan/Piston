@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour
     private const float MinFov = 15f;
     private const float MaxFov = 90f;
 
+    private PistonManager _pistonManager;
     private Camera _mainCamera;
     private float _xAxis;
     private float _yAxis;
@@ -18,8 +19,14 @@ public class CameraController : MonoBehaviour
         _mainCamera = Camera.main;
     }
 
+    private void Start()
+    {
+        _pistonManager = PistonManager.Instance;
+    }
+
     private void Update()
     {
+        if (!_pistonManager.isActive) return;
         HandleCameraScroll();
         HandleCameraRotation();
         HandleCameraMovement();
@@ -55,7 +62,7 @@ public class CameraController : MonoBehaviour
         // Camera Movement
         if (Input.GetMouseButton(0)) // left mouse button
         {
-            if (Manager.Instance.isObjectMoving) return;
+            if (_pistonManager.isObjectMoving) return;
 
             Vector3 movementInput = new Vector3(-Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"), 0) * MovementSpeed * Time.deltaTime;
 

@@ -12,6 +12,7 @@ public class Drag : MonoBehaviour
     private Vector3 mOffset;
     private float mZCoordinate;
 
+    private PistonManager _pistonManager;
     [SerializeField] private Transform target;
     [SerializeField] private Material targetMaterial;
     
@@ -21,32 +22,20 @@ public class Drag : MonoBehaviour
 
     private void Start()
     {
-        if (target.TryGetComponent(out MeshRenderer meshRenderer))
-        {
+        _pistonManager = PistonManager.Instance;
+        
+        if (target.TryGetComponent(out MeshRenderer meshRenderer)) 
             targetMaterial = meshRenderer.material;
-        }
     }
-
-    private void OnEnable()
-    {
-        Actions.Success += OnLevelEnd;
-    }
-
-    private void OnDisable()
-    {
-        Actions.Success -= OnLevelEnd;
-    }
-
-    private void OnLevelEnd()
-    {
-        enabled = false;
-        if (itemType != ItemType.Bolt)
-            gameObject.SetActive(false);
-    }
-
     private void OnMouseDown()
     {
-        Manager.Instance.isObjectMoving = true;
+        if (!_pistonManager.isActive) return;
+        
+        _pistonManager.isObjectMoving = true;
+        
+        if (GetDistance() < minDistance)
+            _pistonManager.RemoveObject();
+        
         mZCoordinate = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
 
         // Store offset = game object world pos - mouse world pos
@@ -67,18 +56,23 @@ public class Drag : MonoBehaviour
         return mouseWorldPos;
     }
 
+    private float GetDistance()
+    {
+        return Vector3.Distance(transform.position, target.position);
+    }
+
     private void MoveTowardsTarget()
     {
         transform.position = GetMouseWorldPos() + mOffset;
 
-        var distance = Vector3.Distance(transform.position, target.position);
-        if (distance < minDistance)
+        
+        if (GetDistance() < minDistance)
         {
             transform.DOMove(target.position, 0.4f);
         }
         else
         {
-            CheckTargetTransparency(distance <= minDistance * 3);
+            CheckTargetTransparency(GetDistance() <= minDistance * 4);
         }
     }
     
@@ -89,7 +83,12 @@ public class Drag : MonoBehaviour
 
     private void OnMouseUp()
     {
-        Manager.Instance.isObjectMoving = false;
+        _pistonManager.isObjectMoving = false;
+        
+        if (GetDistance() < minDistance)
+        {
+            PistonManager.Instance.AddNewObject();
+        }
     }
 
     private void CheckTargetTransparency(bool isInRange)
