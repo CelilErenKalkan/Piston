@@ -364,6 +364,8 @@
 "Assets/Scripts/Actions.cs"
 "Assets/Scripts/CameraController.cs"
 "Assets/Scripts/Drag.cs"
+"Assets/Scripts/Manager.cs"
+"Assets/Scripts/MonoSingleton.cs"
 -langversion:9.0
 
 /deterministic

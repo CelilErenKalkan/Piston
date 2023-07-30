@@ -1,4 +1,3 @@
-using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
@@ -47,6 +46,7 @@ public class Drag : MonoBehaviour
 
     private void OnMouseDown()
     {
+        Manager.Instance.isObjectMoving = true;
         mZCoordinate = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
 
         // Store offset = game object world pos - mouse world pos
@@ -74,10 +74,10 @@ public class Drag : MonoBehaviour
             switch (itemType)
             {
                 case ItemType.Rod:
-                    transform.DOMove(target.position, 0.3f);
+                    transform.DOMove(target.position, 0.4f);
                     return;
                 case ItemType.Bolt:
-                    transform.DOMove(target.position, 0.3f);
+                    transform.DOMove(target.position, 0.4f);
                     return;
                 default:
                     return;
@@ -85,6 +85,11 @@ public class Drag : MonoBehaviour
         }
         
         CheckTargetTransparency(distance <= minDistance * 3);
+    }
+
+    private void OnMouseUp()
+    {
+        Manager.Instance.isObjectMoving = false;
     }
 
     private void CheckTargetTransparency(bool isInRange)

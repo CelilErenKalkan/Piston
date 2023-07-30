@@ -112,8 +112,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 3427381208968081204}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &1839852324491074511
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,8 +227,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 6071811501102601378}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &2301912659064316138
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,8 +342,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 7104983672015131469}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &3193774833805086235
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,8 +457,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 3080186437527010493}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &3540012397995533325
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,8 +572,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 7568288068625021917}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &6410020279691291171
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,8 +687,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 4389243842917676235}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &6880936916471957598
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,8 +844,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 5277734490087466302}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &7479110942578711280
 GameObject:
   m_ObjectHideFlags: 0
@@ -952,8 +959,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 8618282339267590944}
+  targetMaterial: {fileID: 0}
   itemType: 0
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &7812930809160112556
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,8 +1074,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 3771478271310235522}
+  targetMaterial: {fileID: 0}
   itemType: 1
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1 &7960747772374689489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1180,8 +1189,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 7604363903725978718}
+  targetMaterial: {fileID: 0}
   itemType: 1
-  minDistance: 0.03
+  minDistance: 0.025
 --- !u!1001 &4475610741313917491
 PrefabInstance:
   m_ObjectHideFlags: 0
