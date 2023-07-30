@@ -17,7 +17,7 @@ public class Drag : MonoBehaviour
     
     [SerializeField] private ItemType itemType;
     
-    [SerializeField] private float minDistance;
+    [SerializeField] private float minDistance = 1.0f;
 
     private void Start()
     {
@@ -55,36 +55,36 @@ public class Drag : MonoBehaviour
 
     private Vector3 GetMouseWorldPos()
     {
-        // pixel coordinates (x,y)
-        var mousePoint = Input.mousePosition;
+        // Get the mouse position in screen coordinates (pixel coordinates)
+        Vector3 mouseScreenPos = Input.mousePosition;
 
-        // z coordinate of game object on screen
-        mousePoint.z = mZCoordinate;
+        // Set the z-coordinate of the mouse position to the distance from the camera to the object
+        mouseScreenPos.z = mZCoordinate;
 
-        return Camera.main.ScreenToWorldPoint(mousePoint);
+        // Convert the mouse position from screen coordinates to world coordinates
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
+
+        return mouseWorldPos;
     }
 
-    private void OnMouseDrag()
+    private void MoveTowardsTarget()
     {
         transform.position = GetMouseWorldPos() + mOffset;
 
         var distance = Vector3.Distance(transform.position, target.position);
         if (distance < minDistance)
         {
-            switch (itemType)
-            {
-                case ItemType.Rod:
-                    transform.DOMove(target.position, 0.4f);
-                    return;
-                case ItemType.Bolt:
-                    transform.DOMove(target.position, 0.4f);
-                    return;
-                default:
-                    return;
-            }
+            transform.DOMove(target.position, 0.4f);
         }
-        
-        CheckTargetTransparency(distance <= minDistance * 3);
+        else
+        {
+            CheckTargetTransparency(distance <= minDistance * 3);
+        }
+    }
+    
+    private void OnMouseDrag()
+    {
+        MoveTowardsTarget();
     }
 
     private void OnMouseUp()
@@ -94,8 +94,7 @@ public class Drag : MonoBehaviour
 
     private void CheckTargetTransparency(bool isInRange)
     {
-        var color = targetMaterial.color;
-        color.a = isInRange ? 0.25f : 0.0f;
-        targetMaterial.DOColor(color, 0.2f);
+        float targetAlpha = isInRange ? 0.25f : 0.0f;
+        targetMaterial.DOFade(targetAlpha, 0.2f);
     }
 }

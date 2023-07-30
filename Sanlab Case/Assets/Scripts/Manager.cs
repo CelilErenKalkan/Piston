@@ -1,4 +1,3 @@
-using Blended;
 using DG.Tweening;
 
 public class Manager : MonoSingleton<Manager>
