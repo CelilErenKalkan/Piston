@@ -12,17 +12,20 @@ public class Drag : MonoBehaviour
 
     private Vector3 mOffset;
     private float mZCoordinate;
+
     [SerializeField] private Transform target;
-    private Vector3 _originPos, _originRot;
+    [SerializeField] private Material targetMaterial;
+    
     [SerializeField] private ItemType itemType;
-    private bool _hasStuck;
+    
     [SerializeField] private float minDistance;
 
     private void Start()
     {
-        var transform1 = transform;
-        _originPos = transform1.position;
-        _originRot = transform1.eulerAngles;
+        if (target.TryGetComponent(out MeshRenderer meshRenderer))
+        {
+            targetMaterial = meshRenderer.material;
+        }
     }
 
     private void OnEnable()
@@ -58,15 +61,11 @@ public class Drag : MonoBehaviour
         // z coordinate of game object on screen
         mousePoint.z = mZCoordinate;
 
-        //if (itemType == ItemType.Pimple)
-        //mousePoint.y = transform.position.y;
-
         return Camera.main.ScreenToWorldPoint(mousePoint);
     }
 
     private void OnMouseDrag()
     {
-        if (_hasStuck) return;
         transform.position = GetMouseWorldPos() + mOffset;
 
         var distance = Vector3.Distance(transform.position, target.position);
@@ -75,37 +74,23 @@ public class Drag : MonoBehaviour
             switch (itemType)
             {
                 case ItemType.Rod:
-                    if (_hasStuck) return;
-                    _hasStuck = true;
-                    transform.DOMove(target.position, 0.5f).OnComplete(GetTheTarget);
+                    transform.DOMove(target.position, 0.3f);
                     return;
                 case ItemType.Bolt:
-                    _hasStuck = true;
-                    transform.DOMove(target.position, 0.5f).OnComplete(GetTheTarget);
+                    transform.DOMove(target.position, 0.3f);
                     return;
                 default:
                     return;
             }
         }
+        
+        CheckTargetTransparency(distance <= minDistance * 3);
     }
 
-    private void GetTheTarget()
+    private void CheckTargetTransparency(bool isInRange)
     {
-        target.SetParent(transform.GetChild(0));
-        Return();
-    }
-
-    private void OnMouseUp()
-    {
-        if (!_hasStuck)
-        {
-            Return();
-        }
-    }
-
-    private void Return()
-    {
-        transform.DOMove(_originPos, 0.2f);
-        transform.DORotate(_originRot, 0.2f);
+        var color = targetMaterial.color;
+        color.a = isInRange ? 0.25f : 0.0f;
+        targetMaterial.DOColor(color, 0.2f);
     }
 }
