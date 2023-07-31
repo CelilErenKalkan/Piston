@@ -364,7 +364,7 @@
 "Assets/Demigiant/DOTweenPro/DOTweenTk2d.cs"
 "Assets/Scripts/Actions.cs"
 "Assets/Scripts/CameraController.cs"
-"Assets/Scripts/Drag.cs"
+"Assets/Scripts/DragAndDropController.cs"
 "Assets/Scripts/MonoSingleton.cs"
 "Assets/Scripts/PistonManager.cs"
 -langversion:9.0
