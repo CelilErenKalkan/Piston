@@ -15,31 +15,18 @@ public class Drag : MonoBehaviour
     private PistonManager _pistonManager;
     [SerializeField] private Transform target;
     [SerializeField] private Material targetMaterial;
-    
+
     [SerializeField] private ItemType itemType;
-    
+
     [SerializeField] private float minDistance = 1.0f;
+    private const float GettingInPlaceDuration = 0.8f;
 
     private void Start()
     {
         _pistonManager = PistonManager.Instance;
-        
-        if (target.TryGetComponent(out MeshRenderer meshRenderer)) 
-            targetMaterial = meshRenderer.material;
-    }
-    private void OnMouseDown()
-    {
-        if (!_pistonManager.isActive) return;
-        
-        _pistonManager.isObjectMoving = true;
-        
-        if (GetDistance() < minDistance)
-            _pistonManager.RemoveObject();
-        
-        mZCoordinate = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
 
-        // Store offset = game object world pos - mouse world pos
-        mOffset = gameObject.transform.position - GetMouseWorldPos();
+        if (target.TryGetComponent(out MeshRenderer meshRenderer))
+            targetMaterial = meshRenderer.material;
     }
 
     private Vector3 GetMouseWorldPos()
@@ -60,15 +47,39 @@ public class Drag : MonoBehaviour
     {
         return Vector3.Distance(transform.position, target.position);
     }
+    
+    private void SetTargetTransparency(float targetAlpha, float duration)
+    {
+        targetMaterial.DOFade(targetAlpha, duration);
+    }
+
+    private void CheckTargetTransparency(bool isInRange)
+    {
+        float targetAlpha = isInRange ? 0.5f : 0.0f;
+        SetTargetTransparency(targetAlpha, 0.2f);
+    }
+
+    private void PlaceWithRotation()
+    {
+        transform.DOMove(target.GetChild(0).position, GettingInPlaceDuration);
+        if (itemType == ItemType.Bolt)
+            transform.DOLocalRotate(new Vector3(0, 180, 0), GettingInPlaceDuration, RotateMode.FastBeyond360).SetRelative(true)
+                .SetEase(Ease.Linear);
+    }
 
     private void MoveTowardsTarget()
     {
         transform.position = GetMouseWorldPos() + mOffset;
 
-        
-        if (GetDistance() < minDistance)
+        if (GetDistance() < minDistance && _pistonManager.CheckNextPart(transform))
         {
-            transform.DOMove(target.position, 0.4f);
+            transform.DOMove(target.position, GettingInPlaceDuration)
+                .OnComplete(
+                    () =>
+                    {
+                        SetTargetTransparency(0.0f, 0.2f);
+                        if (target.childCount > 0) PlaceWithRotation();
+                    });
         }
         else
         {
@@ -76,24 +87,36 @@ public class Drag : MonoBehaviour
         }
     }
     
+    private void OnMouseDown()
+    {
+        if (!_pistonManager.isActive || !_pistonManager.CheckLastPart(transform)) return;
+        
+        _pistonManager.isObjectMoving = true;
+
+        if (GetDistance() < minDistance)
+            _pistonManager.RemoveObject(transform);
+
+        mZCoordinate = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
+
+        // Store offset = game object world pos - mouse world pos
+        mOffset = gameObject.transform.position - GetMouseWorldPos();
+    }
+
     private void OnMouseDrag()
     {
+        if (!_pistonManager.isActive || !_pistonManager.CheckLastPart(transform)) return;
         MoveTowardsTarget();
     }
 
     private void OnMouseUp()
     {
-        _pistonManager.isObjectMoving = false;
+        if (!_pistonManager.isActive || !_pistonManager.CheckLastPart(transform)) return;
         
-        if (GetDistance() < minDistance)
-        {
-            PistonManager.Instance.AddNewObject();
-        }
-    }
+        _pistonManager.isObjectMoving = false;
 
-    private void CheckTargetTransparency(bool isInRange)
-    {
-        float targetAlpha = isInRange ? 0.25f : 0.0f;
-        targetMaterial.DOFade(targetAlpha, 0.2f);
+        if (GetDistance() < minDistance && _pistonManager.CheckNextPart(transform))
+        {
+            PistonManager.Instance.OrderNewPart(transform);
+        }
     }
 }
